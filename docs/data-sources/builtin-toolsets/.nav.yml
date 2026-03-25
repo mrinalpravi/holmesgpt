@@ -12,6 +12,7 @@ nav:
   - Confluence: confluence.md
   - Connectivity Check: connectivity-check.md
   - Coralogix: coralogix-logs.md
+  - Crossplane: crossplane.md
   - DataDog: datadog.md
   - Docker: docker.md
   - Elasticsearch / OpenSearch: elasticsearch.md

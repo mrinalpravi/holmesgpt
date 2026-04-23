@@ -28,6 +28,10 @@ class DestinationConfig(BaseModel):
     webhook_url: Optional[str] = None
     channel: Optional[str] = None
     integration_key: Optional[str] = None
+    # Mattermost-specific fields (the bot token travels via config.mattermost_token
+    # or the MATTERMOST_TOKEN env var — not inside the YAML destinations block).
+    mattermost_url: Optional[str] = None
+    mattermost_channel_id: Optional[str] = None
 
 
 class Check(BaseModel):

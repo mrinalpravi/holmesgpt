@@ -33,6 +33,7 @@ from holmes.plugins.runbooks import (
 # Source plugin imports moved to their respective create methods to speed up startup
 if TYPE_CHECKING:
     from holmes.core.tool_calling_llm import ToolCallingLLM
+    from holmes.plugins.destinations.mattermost import MattermostDestination
     from holmes.plugins.destinations.slack import SlackDestination
     from holmes.plugins.sources.github import GitHubSource
     from holmes.plugins.sources.jira import JiraServiceManagementSource, JiraSource
@@ -85,6 +86,11 @@ class Config(RobustaBaseConfig):
 
     slack_token: Optional[SecretStr] = None
     slack_channel: Optional[str] = None
+
+    mattermost_url: Optional[str] = None
+    mattermost_token: Optional[SecretStr] = None
+    mattermost_channel_id: Optional[str] = None
+    mattermost_verify_ssl: bool = True
 
     pagerduty_api_key: Optional[SecretStr] = None
     pagerduty_user_email: Optional[str] = None
@@ -239,6 +245,9 @@ class Config(RobustaBaseConfig):
             "jira_query",
             "slack_token",
             "slack_channel",
+            "mattermost_url",
+            "mattermost_token",
+            "mattermost_channel_id",
             "github_url",
             "github_owner",
             "github_repository",
@@ -606,6 +615,22 @@ class Config(RobustaBaseConfig):
         if self.slack_channel is None:
             raise ValueError("--slack-channel must be specified")
         return SlackDestination(self.slack_token.get_secret_value(), self.slack_channel)
+
+    def create_mattermost_destination(self) -> "MattermostDestination":
+        from holmes.plugins.destinations.mattermost import MattermostDestination
+
+        if self.mattermost_url is None:
+            raise ValueError("--mattermost-url must be specified")
+        if self.mattermost_token is None:
+            raise ValueError("--mattermost-token must be specified")
+        if self.mattermost_channel_id is None:
+            raise ValueError("--mattermost-channel-id must be specified")
+        return MattermostDestination(
+            url=self.mattermost_url,
+            token=self.mattermost_token.get_secret_value(),
+            channel_id=self.mattermost_channel_id,
+            verify_ssl=self.mattermost_verify_ssl,
+        )
 
     @staticmethod
     def _format_token_count(n: int) -> str:

@@ -127,6 +127,21 @@ opt_slack_channel: Optional[str] = typer.Option(
     "--slack-channel",
     help="Slack channel if --destination=slack (experimental). E.g. #devops",
 )
+opt_mattermost_url: Optional[str] = typer.Option(
+    None,
+    "--mattermost-url",
+    help="Mattermost server base URL if --destination=mattermost (experimental). E.g. https://mattermost.example.com",
+)
+opt_mattermost_token: Optional[str] = typer.Option(
+    None,
+    "--mattermost-token",
+    help="Mattermost bot/personal access token if --destination=mattermost (experimental).",
+)
+opt_mattermost_channel_id: Optional[str] = typer.Option(
+    None,
+    "--mattermost-channel-id",
+    help="Mattermost channel ID (26-char string, not the #name) if --destination=mattermost (experimental).",
+)
 opt_json_output_file: Optional[str] = typer.Option(
     None,
     "--json-output-file",
@@ -204,6 +219,9 @@ def ask(
     destination: Optional[DestinationType] = opt_destination,
     slack_token: Optional[str] = opt_slack_token,
     slack_channel: Optional[str] = opt_slack_channel,
+    mattermost_url: Optional[str] = opt_mattermost_url,
+    mattermost_token: Optional[str] = opt_mattermost_token,
+    mattermost_channel_id: Optional[str] = opt_mattermost_channel_id,
     show_tool_output: bool = typer.Option(
         False,
         "--show-tool-output",
@@ -292,6 +310,9 @@ def ask(
         custom_toolsets_from_cli=custom_toolsets,
         slack_token=slack_token,
         slack_channel=slack_channel,
+        mattermost_url=mattermost_url,
+        mattermost_token=mattermost_token,
+        mattermost_channel_id=mattermost_channel_id,
     )
 
     # Create tracer if trace option is provided
@@ -464,6 +485,9 @@ def alertmanager(
     destination: Optional[DestinationType] = opt_destination,
     slack_token: Optional[str] = opt_slack_token,
     slack_channel: Optional[str] = opt_slack_channel,
+    mattermost_url: Optional[str] = opt_mattermost_url,
+    mattermost_token: Optional[str] = opt_mattermost_token,
+    mattermost_channel_id: Optional[str] = opt_mattermost_channel_id,
     json_output_file: Optional[str] = opt_json_output_file,
 ):
     """
@@ -484,6 +508,9 @@ def alertmanager(
         alertmanager_file=alertmanager_file,
         slack_token=slack_token,
         slack_channel=slack_channel,
+        mattermost_url=mattermost_url,
+        mattermost_token=mattermost_token,
+        mattermost_channel_id=mattermost_channel_id,
         custom_toolsets_from_cli=custom_toolsets,
     )
 

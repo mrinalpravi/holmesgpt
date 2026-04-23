@@ -15,7 +15,7 @@ The integration is split into two toolsets:
 
 Each toolset runs its own CRD health check on startup. On AKS/GKE clusters, `karpenter/aws` stays disabled automatically when the AWS provider is not installed.
 
-By default `karpenter_controller_logs` reads from the `karpenter` namespace (the upstream Helm chart default). On EKS managed add-on installs — where Karpenter runs in `kube-system` — pass `ns: kube-system` at call time, or let Holmes infer it. (`ns` rather than `namespace`, because `namespace` is a reserved name in Jinja2.)
+By default `karpenter_controller_logs` reads from the `karpenter` namespace (the upstream Helm chart default). On EKS managed add-on installs — where Karpenter runs in `kube-system` — Holmes will pass `ns: kube-system` to the tool.
 
 ## Configuration
 

@@ -20,7 +20,7 @@ class MattermostDestination(DestinationPlugin):
         token: str,
         channel_id: str,
         verify_ssl: bool = True,
-    ):
+    ) -> None:
         """
         Initialize the Mattermost destination.
 
@@ -39,9 +39,13 @@ class MattermostDestination(DestinationPlugin):
         self._headers = {"Authorization": f"Bearer {token}"}
 
     def send_issue(self, issue: Issue, result: LLMResult) -> None:
-        color = (
-            "#FF0000" if issue.presentation_status == IssueStatus.OPEN else "#00FF00"
-        )  # Red for firing, green for resolved
+        # Red for firing, green for resolved, gray when the status is unknown.
+        if issue.presentation_status == IssueStatus.OPEN:
+            color = "#FF0000"
+        elif issue.presentation_status == IssueStatus.CLOSED:
+            color = "#00FF00"
+        else:
+            color = "#808080"
         if issue.presentation_status and issue.show_status_in_title:
             title = f"{issue.name} - {issue.presentation_status.value}"
         else:

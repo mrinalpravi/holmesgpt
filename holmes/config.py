@@ -4,6 +4,7 @@ import os.path
 import threading
 from enum import Enum
 from pathlib import Path
+from urllib.parse import urlparse
 
 display_logger = logging.getLogger("holmes.display.config")
 from typing import TYPE_CHECKING, Any, List, Optional, Union
@@ -257,6 +258,13 @@ class Config(RobustaBaseConfig):
             val = os.getenv(field_name.upper(), None)
             if val is not None:
                 kwargs[field_name] = val
+        mattermost_verify_ssl_env = os.getenv("MATTERMOST_VERIFY_SSL")
+        if mattermost_verify_ssl_env is not None:
+            normalized = mattermost_verify_ssl_env.strip().lower()
+            if normalized in ("1", "true", "yes"):
+                kwargs["mattermost_verify_ssl"] = True
+            elif normalized in ("0", "false", "no"):
+                kwargs["mattermost_verify_ssl"] = False
         kwargs["cluster_name"] = Config.__get_cluster_name()
         kwargs["should_try_robusta_ai"] = True
         result = cls(**kwargs)
@@ -621,6 +629,12 @@ class Config(RobustaBaseConfig):
 
         if self.mattermost_url is None:
             raise ValueError("--mattermost-url must be specified")
+        parsed_mattermost_url = urlparse(self.mattermost_url)
+        if parsed_mattermost_url.scheme not in ("http", "https") or not parsed_mattermost_url.netloc:
+            raise ValueError(
+                "--mattermost-url must be a valid http:// or https:// URL with a host "
+                f"(got: {self.mattermost_url!r})"
+            )
         if self.mattermost_token is None:
             raise ValueError("--mattermost-token must be specified")
         if self.mattermost_channel_id is None:

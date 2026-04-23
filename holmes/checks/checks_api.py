@@ -200,15 +200,25 @@ def execute_health_check(
                             type="mattermost", status="pending"
                         )
                         try:
-                            mm_url = dest_config.get("url") or os.environ.get(
-                                "MATTERMOST_URL"
+                            mm_url = (
+                                dest_config.get("url")
+                                or _CONFIG.mattermost_url
+                                or os.environ.get("MATTERMOST_URL")
                             )
-                            mm_token = dest_config.get("token") or os.environ.get(
-                                "MATTERMOST_TOKEN"
+                            mm_token = (
+                                dest_config.get("token")
+                                or (
+                                    _CONFIG.mattermost_token.get_secret_value()
+                                    if _CONFIG.mattermost_token
+                                    else None
+                                )
+                                or os.environ.get("MATTERMOST_TOKEN")
                             )
-                            mm_channel_id = dest_config.get(
-                                "channel_id"
-                            ) or os.environ.get("MATTERMOST_CHANNEL_ID")
+                            mm_channel_id = (
+                                dest_config.get("channel_id")
+                                or _CONFIG.mattermost_channel_id
+                                or os.environ.get("MATTERMOST_CHANNEL_ID")
+                            )
                             mm_verify_ssl = dest_config.get("verify_ssl", True)
                             if mm_url and mm_token and mm_channel_id:
                                 notification.channel = mm_channel_id

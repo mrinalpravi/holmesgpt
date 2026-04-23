@@ -544,6 +544,12 @@ class CheckRunner:
                     else self.config.mattermost_channel_id
                 )
                 mattermost_token = self.config.mattermost_token
+                mattermost_verify_ssl = (
+                    mattermost_dest_config.mattermost_verify_ssl
+                    if mattermost_dest_config
+                    and mattermost_dest_config.mattermost_verify_ssl is not None
+                    else self.config.mattermost_verify_ssl
+                )
 
                 if not mattermost_url or not mattermost_token or not mattermost_channel_id:
                     if self.verbose:
@@ -557,7 +563,7 @@ class CheckRunner:
                         url=mattermost_url,
                         token=mattermost_token.get_secret_value(),
                         channel_id=mattermost_channel_id,
-                        verify_ssl=self.config.mattermost_verify_ssl,
+                        verify_ssl=mattermost_verify_ssl,
                     )
                     mattermost.send_issue(issue, llm_result)
 

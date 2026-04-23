@@ -215,11 +215,14 @@ Whether to verify the server's TLS certificate. Set to `false` only for Mattermo
 
 ### Message Format
 
-When a check fails, Holmes posts a message with a colored attachment (red for open, green for resolved) containing the LLM analysis. Follow-up replies are posted in the same thread and include:
+When a check fails, Holmes posts a message with a colored attachment (red for open, green for resolved) containing the LLM analysis. Follow-up replies are posted in the same thread and may include:
 
-- The list of tools the AI called (with each tool's output attached as a file)
 - The raw issue metadata (attached as a JSON file)
-- A `🐞 DEBUG` reply with the full LLM conversation (attached as a JSON file)
+- The list of tools the AI called, with each tool's output attached as a file — only when `LLMResult.tool_calls` is populated
+- A `🐞 DEBUG` reply with the full LLM conversation (attached as a JSON file) — only when `LLMResult.messages` is populated
+
+!!! note
+    Health check alerts dispatch with an empty `LLMResult.tool_calls` and `LLMResult.messages`, so only the issue metadata reply is posted in the thread. The tool-output and `🐞 DEBUG` replies appear for other flows (e.g. `ask`/`investigate`) that populate those fields.
 
 
 ## PagerDuty Destination

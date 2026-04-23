@@ -68,7 +68,7 @@ class MattermostDestination(DestinationPlugin):
             response = self._post_message(message="", attachments=[attachment])
         except requests.exceptions.RequestException as e:
             self._log_send_error(e, title)
-            return
+            raise
 
         root_id = response.get("id")
         if not root_id:

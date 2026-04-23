@@ -222,7 +222,7 @@ When a check fails, Holmes posts a message with a colored attachment (red for op
 - A `🐞 DEBUG` reply with the full LLM conversation (attached as a JSON file) — only when `LLMResult.messages` is populated
 
 !!! note
-    Health check alerts dispatch with an empty `LLMResult.tool_calls` and `LLMResult.messages`, so only the issue metadata reply is posted in the thread. The tool-output and `🐞 DEBUG` replies appear for other flows (e.g. `ask`/`investigate`) that populate those fields.
+    Health check alerts dispatch with an empty `LLMResult.tool_calls` and `LLMResult.messages`, and do not populate `issue.presentation_all_metadata`. The Mattermost plugin skips the metadata reply when `issue.presentation_all_metadata` is empty, so threaded replies (tool output, issue metadata, and `🐞 DEBUG`) only appear for other flows (e.g. `ask`/`investigate`) that populate those fields.
 
 
 ## PagerDuty Destination
